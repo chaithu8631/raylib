@@ -1,34 +1,30 @@
 const r = require("raylib");
 
 function updatePosition(detector) {
-    const updatePosition = detector.position + detector.velocity + detector.width;
-    if (detector.velocity > 0) {
-        detector.position = updatePosition > detector.upperBoundary ? detector.upperBoundary - detector.width : updatePosition - detector.width;
-    }else {
-        detector.position = detector.lowerBoundary > updatePosition ? detector.lowerBoundary : updatePosition - detector.width;
-    }
+    detector.position = detector.position + detector.velocity;
+    // const positionToBeUpdated = detector.position + detector.velocity + detector.width;
+    // if (detector.velocity > 0) {
+    //     detector.position = positionToBeUpdated > detector.upperBoundary ? detector.upperBoundary - detector.width : positionToBeUpdated - detector.width;
+    // }else {
+    //     detector.position = detector.lowerBoundary > positionToBeUpdated ? detector.lowerBoundary : positionToBeUpdated - detector.width;
+    // }
     return detector;
 }
 
-function detectParticle(
-    detectorPosition,
-    detectorWidth,
-    particlePosition,
-    particleWidth,
-) {
-    const particleEnd = particlePosition + particleWidth;
-    const detectorEnd = detectorPosition + detectorWidth;
-
-    return detectorPosition <= particleEnd && detectorEnd > particlePosition;
+function isOverlap(start1, end1, end2, start2) {
+    return end1 > end2 && start1 < start2;
 }
 
-function deriveVelocity(
-    detector
-) {
+function deriveVelocity(detector) {
     const detectorEnd = detector.position + detector.width;
-    detector.velocity = detector.position === detector.lowerBoundary || detectorEnd === detector.upperBoundary
-        ? -detector.velocity
-        : detector.velocity;
+    detector.velocity = isOverlap(
+        detector.lowerBoundary,
+        detector.upperBoundary,
+        detectorEnd,
+        detector.position,
+    )
+        ? detector.velocity
+        : -detector.velocity;
     return detector;
 }
 
@@ -56,46 +52,54 @@ function selectColor(hasDetected) {
           };
 }
 
-function updateDetector(detector) {
+function updateHorizontalDetector(detector, particle1, particle2) {
     updatePosition(detector);
     deriveVelocity(detector);
-}
-
-function updateHorizontalDetector(detector, particle1, particle2) {
-    updateDetector(detector);
-    detector.hasDetected = scanHorizontally(detector,particle1,particle2);
+    detector.hasDetected = scanHorizontally(detector, particle1, particle2);
+    return detector;
 }
 function updateVerticalDetector(detector, particle) {
-    updateDetector(detector);
-    detector.hasDetected = scanVertically(detector,particle);
-}
-
-function scanVertically(detector, particle3) {
-    return detectParticle(
+    updatePosition(detector);
+    deriveVelocity(detector);
+    const detectorEnd = detector.position + detector.width;
+    const particleEnd = particle.position + particle.width;
+    detector.hasDetected = isOverlap(
         detector.position,
-        detector.width,
-        particle3.position,
-        particle3.width,
-    )
+        detectorEnd,
+        particle.position,
+        particleEnd,
+    );
+    return detector;
 }
 
 function scanHorizontally(detector, particle1, particle2) {
-    const scanParticle1 = detectParticle(
+    const detectorEnd = detector.position + detector.width;
+    const particle1End = particle1.position + particle1.width;
+    const particle2End = particle2.position + particle2.width;
+
+    const scanParticle1 = isOverlap(
         detector.position,
-        detector.width,
+        detectorEnd,
         particle1.position,
-        particle1.width,
+        particle1End,
     );
-    const scanParticle2 = detectParticle(
+    const scanParticle2 = isOverlap(
         detector.position,
-        detector.width,
+        detectorEnd,
         particle2.position,
-        particle2.width,
+        particle2End,
     );
     return scanParticle1 || scanParticle2;
 }
 
-function createDetector(position,width,velocity,lowerBoundary,upperBoundary,hasDetected) {
+function createDetector(
+    position,
+    width,
+    velocity,
+    lowerBoundary,
+    upperBoundary,
+    hasDetected,
+) {
     return {
         position,
         width,
@@ -103,26 +107,22 @@ function createDetector(position,width,velocity,lowerBoundary,upperBoundary,hasD
         lowerBoundary,
         upperBoundary,
         hasDetected,
-    }
+    };
 }
+
 function createParticle(position, width) {
     return {
         position,
         width,
     };
 }
+
 module.exports = {
-    updatePosition,
-    detectParticle,
-    deriveVelocity,
     drawHorizontally,
     drawVertically,
     selectColor,
-    updateDetector,
     updateHorizontalDetector,
     updateVerticalDetector,
-    scanHorizontally,
-    scanVertically,
     createDetector,
     createParticle,
 };

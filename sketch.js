@@ -9,11 +9,11 @@ const window = {
 };
 window.halfScreen = window.screenWidth / 2;
 
-const detector1 = g.createDetector(0, 20, 5, 0, window.halfScreen, false);
-const detector2 = g.createDetector(window.halfScreen, 20, 3, window.halfScreen, window.screenWidth, false);
+const detector1 = g.createDetector(0, 80, 2, 0, window.halfScreen, false);
+const detector2 = g.createDetector(window.halfScreen, 20, 2, window.halfScreen, window.screenWidth, false);
 const detector3 = g.createDetector(0, 20, 1, 0, window.screenHeight, false);
 
-const particle1 = g.createParticle(140, 20);
+const particle1 = g.createParticle(140, 1);
 const particle2 = g.createParticle(440, 20);
 const particle3 = g.createParticle(190, 20);
 
@@ -26,7 +26,6 @@ function setup() {
 function running() {
     return !r.WindowShouldClose();
 }
-
 
 function update() {
     g.updateHorizontalDetector(detector1,particle1,particle2);
