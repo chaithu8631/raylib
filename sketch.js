@@ -3,6 +3,7 @@ const g = require("./geometry");
 
 
 function setup() {
+
     window = {
               screenWidth: 600,
               screenHeight: 400,
@@ -47,6 +48,7 @@ function update(global) {
 function draw(global) {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
+    
     g.drawHorizontally(global.particle1.position, global.particle1.width, r.BLUE);
     g.drawHorizontally(global.particle2.position, global.particle2.width, r.BLUE);
     g.drawVertically(global.particle3.position, global.particle3.width, r.BLUE);
