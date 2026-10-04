@@ -1,15 +1,15 @@
 const sketch = require("./sketch");
 
-function loop() {
+function loop(global) {
   while (sketch.running()) {
-    sketch.update();
-    sketch.draw();
+    sketch.update(global);
+    sketch.draw(global);
   }
 }
 
 function main() {
-  sketch.setup();
-  loop();
+  const global = sketch.setup();
+  loop(global);
   sketch.teardown();
 }
 
