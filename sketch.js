@@ -9,55 +9,13 @@ const window = {
 };
 window.halfScreen = window.screenWidth / 2;
 
-const detectedColor = {
-    r: 255,
-    g: 0,
-    b: 0,
-    a: 255,
-};
+const detector1 = g.createDetector(0, 20, 5, 0, window.halfScreen, false);
+const detector2 = g.createDetector(window.halfScreen, 20, 3, window.halfScreen, window.screenWidth, false);
+const detector3 = g.createDetector(0, 20, 1, 0, window.screenHeight, false);
 
-const undetectedColor = {
-    r: 255,
-    g: 255,
-    b: 255,
-    a: 255,
-};
-
-const detector1 = {
-    lowerBoundary: 0,
-    upperBoundary: window.halfScreen,
-    position: 0,
-    width: 20,
-    velocity: 1,
-    color: undetectedColor,
-};
-
-const detector2 = {
-    lowerBoundary: window.halfScreen,
-    upperBoundary: window.screenWidth,
-    position: window.halfScreen,
-    width: 20,
-    velocity: 2,
-    color: undetectedColor,
-};
-
-const detector3 = {
-    lowerBoundary: 0,
-    upperBoundary: window.screenHeight,
-    position: 0,
-    width: 20,
-    velocity: 1,
-    color: undetectedColor,
-};
-
-const particle1Position = 140;
-const particle1Width = 20;
-
-const particle2Position = 440;
-const particle2Width = 20;
-
-const particle3Position = 190;
-const particle3Width = 20;
+const particle1 = g.createParticle(140, 20);
+const particle2 = g.createParticle(440, 20);
+const particle3 = g.createParticle(190, 20);
 
 function setup() {
     r.SetTraceLogLevel(r.LOG_NONE);
@@ -69,63 +27,23 @@ function running() {
     return !r.WindowShouldClose();
 }
 
-function scanVertically(detectorPosition, detectorSize) {
-    return g.detectParticle(
-        detectorPosition,
-        detectorSize,
-        particle3Position,
-        particle3Width,
-    )
-        ? detectedColor
-        : undetectedColor;
-}
-
-function scanHorizontally(detectorPosition, detectorSize) {
-    const scanParticle1 = g.detectParticle(
-        detectorPosition,
-        detectorSize,
-        particle1Position,
-        particle1Width,
-    );
-    const scanParticle2 = g.detectParticle(
-        detectorPosition,
-        detectorSize,
-        particle2Position,
-        particle2Width,
-    );
-    return scanParticle1 || scanParticle2 ? detectedColor : undetectedColor;
-}
-
-function updateDetector(detector) {
-    detector.position = g.updatePosition(detector.position, detector.velocity);
-    detector.velocity = g.deriveVelocity(
-        detector.position,
-        detector.width,
-        detector.lowerBoundary,
-        detector.upperBoundary,
-        detector.velocity,
-    );
-}
 
 function update() {
-    updateDetector(detector1);
-    updateDetector(detector2);
-    updateDetector(detector3);
-    detector1.color = scanHorizontally(detector1.position, detector1.width);
-    detector2.color = scanHorizontally(detector2.position, detector2.width);
-    detector3.color = scanVertically(detector3.position, detector3.width);
+    g.updateHorizontalDetector(detector1,particle1,particle2);
+    g.updateHorizontalDetector(detector2,particle1,particle2);
+    g.updateVerticalDetector(detector3,particle3);
 }
 
 function draw() {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
-    g.drawHorizontally(particle1Position, particle1Width, r.BLUE);
-    g.drawHorizontally(particle2Position, particle2Width, r.BLUE);
-    g.drawVertically(particle3Position, particle3Width, r.BLUE);
+    g.drawHorizontally(particle1.position, particle1.width, r.BLUE);
+    g.drawHorizontally(particle2.position, particle2.width, r.BLUE);
+    g.drawVertically(particle3.position, particle3.width, r.BLUE);
 
-    g.drawHorizontally(detector1.position, detector1.width, detector1.color);
-    g.drawHorizontally(detector2.position, detector2.width, detector2.color);
-    g.drawVertically(detector3.position, detector3.width, detector3.color);
+    g.drawHorizontally(detector1.position, detector1.width, g.selectColor(detector1.hasDetected));
+    g.drawHorizontally(detector2.position, detector2.width, g.selectColor(detector2.hasDetected));
+    g.drawVertically(detector3.position, detector3.width, g.selectColor(detector3.hasDetected));
     r.EndDrawing();
 }
 
