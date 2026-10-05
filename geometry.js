@@ -1,5 +1,5 @@
 const r = require("raylib");
-
+const c = require("./color");
 function createDetector(
     position,
     width,
@@ -26,7 +26,6 @@ function createParticle(position, width) {
 }
 
 function updatePosition(detector) {
-    console.log(detector);
     detector.position = detector.position + detector.velocity;
     return detector;
 }
@@ -57,20 +56,7 @@ function drawVertically(startPosition, height, color) {
 }
 
 function selectColor(hasDetected) {
-    const detectedColor = {
-        r: 255,
-        g: 0,
-        b: 0,
-        a: 255,
-    };
-    const undetectedColor = {
-        r: 255,
-        g: 255,
-        b: 255,
-        a: 255,
-    };
-
-    return hasDetected ? detectedColor : undetectedColor;
+    return hasDetected ? c.detectedColor : c.undetectedColor;
 }
 
 function updateHorizontalDetector(detector, particle1, particle2) {

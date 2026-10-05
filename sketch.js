@@ -1,38 +1,31 @@
 const r = require("raylib");
 const g = require("./geometry");
+const c = require("./color");
 
 
-function setup() {
+function setup(global) {
 
-    window = {
+    global.window = {
               screenWidth: 600,
               screenHeight: 400,
               title: "particles detector",
               FPS: 60,
           };
     r.SetTraceLogLevel(r.LOG_NONE);
-    r.InitWindow(window.screenWidth, window.screenHeight, window.title);
-    r.SetTargetFPS(window.FPS);
+    r.InitWindow(global.window.screenWidth, global.window.screenHeight, global.window.title);
+    r.SetTargetFPS(global.window.FPS);
 
-    window.halfScreen = window.screenWidth / 2;
+    global.window.halfScreen = global.window.screenWidth / 2;
 
-    const detector1 = g.createDetector(0, 80, 2, 0, window.halfScreen, false);
-    const detector2 = g.createDetector(window.halfScreen, 20, 2, window.halfScreen, window.screenWidth, false);
-    const detector3 = g.createDetector(0, 20, 1, 0, window.screenHeight, false);
+    global.detector1 = g.createDetector(0, 80, 2, 0, global.window.halfScreen, false);
+    global.detector2 = g.createDetector(global.window.halfScreen, 20, 2, global.window.halfScreen, global.window.screenWidth, false);
+    global.detector3 = g.createDetector(0, 20, 1, 0, global.window.screenHeight, false);
     
-    const particle1 = g.createParticle(140, 1);
-    const particle2 = g.createParticle(440, 20);
-    const particle3 = g.createParticle(190, 20);
+    global.particle1 = g.createParticle(140, 1);
+    global.particle2 = g.createParticle(440, 20);
+    global.particle3 = g.createParticle(190, 20);
 
-    return {
-        window,
-        detector1,
-        detector2,
-        detector3,
-        particle1,
-        particle2,
-        particle3,
-    };
+    return global;
 }
 
 function running() {
@@ -43,20 +36,22 @@ function update(global) {
     g.updateHorizontalDetector(global.detector1,global.particle1,global.particle2);
     g.updateHorizontalDetector(global.detector2,global.particle1,global.particle2);
     g.updateVerticalDetector(global.detector3,global.particle3);
+    return global;
 }
 
 function draw(global) {
     r.BeginDrawing();
-    r.ClearBackground(r.BLACK);
+    r.ClearBackground(c.bgColor);
     
-    g.drawHorizontally(global.particle1.position, global.particle1.width, r.BLUE);
-    g.drawHorizontally(global.particle2.position, global.particle2.width, r.BLUE);
-    g.drawVertically(global.particle3.position, global.particle3.width, r.BLUE);
+    g.drawHorizontally(global.particle1.position, global.particle1.width, c.particleColor);
+    g.drawHorizontally(global.particle2.position, global.particle2.width, c.particleColor);
+    g.drawVertically(global.particle3.position, global.particle3.width, c.particleColor);
 
     g.drawHorizontally(global.detector1.position, global.detector1.width, g.selectColor(global.detector1.hasDetected));
     g.drawHorizontally(global.detector2.position, global.detector2.width, g.selectColor(global.detector2.hasDetected));
     g.drawVertically(global.detector3.position, global.detector3.width, g.selectColor(global.detector3.hasDetected));
     r.EndDrawing();
+    return global;
 }
 
 function teardown() {
