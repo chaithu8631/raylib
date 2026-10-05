@@ -23,9 +23,13 @@ const particleColor = {
     a: 255,
 };
 
+function selectColor(hasDetected) {
+    return hasDetected ? detectedColor : undetectedColor;
+}
 module.exports = {
     undetectedColor,
     detectedColor,
     bgColor,
     particleColor,
+    selectColor,
 };

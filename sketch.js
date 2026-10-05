@@ -1,6 +1,7 @@
 const r = require("raylib");
 const g = require("./geometry");
 const c = require("./color");
+const du = require("./draw_update");
 
 
 function setup(global) {
@@ -33,9 +34,9 @@ function running() {
 }
 
 function update(global) {
-    g.updateHorizontalDetector(global.detector1,global.particle1,global.particle2);
-    g.updateHorizontalDetector(global.detector2,global.particle1,global.particle2);
-    g.updateVerticalDetector(global.detector3,global.particle3);
+    du.updateHorizontalDetector(global.detector1,global.particle1,global.particle2);
+    du.updateHorizontalDetector(global.detector2,global.particle1,global.particle2);
+    du.updateVerticalDetector(global.detector3,global.particle3);
     return global;
 }
 
@@ -43,13 +44,13 @@ function draw(global) {
     r.BeginDrawing();
     r.ClearBackground(c.bgColor);
     
-    g.drawHorizontally(global.particle1.position, global.particle1.width, c.particleColor);
-    g.drawHorizontally(global.particle2.position, global.particle2.width, c.particleColor);
-    g.drawVertically(global.particle3.position, global.particle3.width, c.particleColor);
+    du.drawHorizontally(global.particle1.position, global.particle1.width, c.particleColor);
+    du.drawHorizontally(global.particle2.position, global.particle2.width, c.particleColor);
+    du.drawVertically(global.particle3.position, global.particle3.width, c.particleColor);
 
-    g.drawHorizontally(global.detector1.position, global.detector1.width, g.selectColor(global.detector1.hasDetected));
-    g.drawHorizontally(global.detector2.position, global.detector2.width, g.selectColor(global.detector2.hasDetected));
-    g.drawVertically(global.detector3.position, global.detector3.width, g.selectColor(global.detector3.hasDetected));
+    du.drawHorizontally(global.detector1.position, global.detector1.width, c.selectColor(global.detector1.hasDetected));
+    du.drawHorizontally(global.detector2.position, global.detector2.width, c.selectColor(global.detector2.hasDetected));
+    du.drawVertically(global.detector3.position, global.detector3.width, c.selectColor(global.detector3.hasDetected));
     r.EndDrawing();
     return global;
 }

@@ -47,39 +47,6 @@ function deriveVelocity(detector) {
     return detector;
 }
 
-function drawHorizontally(startPosition, width, color) {
-    r.DrawRectangle(startPosition, 0, width, r.GetScreenHeight(), color);
-}
-
-function drawVertically(startPosition, height, color) {
-    r.DrawRectangle(0, startPosition, r.GetScreenWidth(), height, color);
-}
-
-function selectColor(hasDetected) {
-    return hasDetected ? c.detectedColor : c.undetectedColor;
-}
-
-function updateHorizontalDetector(detector, particle1, particle2) {
-    updatePosition(detector);
-    deriveVelocity(detector);
-    detector.hasDetected = scanTwoParticles(detector, particle1, particle2);
-    return detector;
-    
-}
-function updateVerticalDetector(detector, particle) {
-    updatePosition(detector);
-    deriveVelocity(detector);
-    const detectorEnd = detector.position + detector.width;
-    const particleEnd = particle.position + particle.width;
-    detector.hasDetected = isOverlap(
-        detector.position,
-        detectorEnd,
-        particle.position,
-        particleEnd,
-    );
-    return detector;
-}
-
 function scanTwoParticles(detector, particle1, particle2) {
     const detectorEnd = detector.position + detector.width;
     const particle1End = particle1.position + particle1.width;
@@ -104,9 +71,8 @@ function scanTwoParticles(detector, particle1, particle2) {
 module.exports = {
     createDetector,
     createParticle,
-    drawHorizontally,
-    drawVertically,
-    selectColor,
-    updateHorizontalDetector,
-    updateVerticalDetector,
+    updatePosition,
+    deriveVelocity,
+    isOverlap,
+    scanTwoParticles,
 };
