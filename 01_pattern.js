@@ -23,7 +23,7 @@ function setup() {
 }
 
 function chooseColor(currentRow, currentColumn) {
-    return (currentColumn * currentRow)%2 === 0 ? r.RED : r.GOLD;
+    return (currentColumn * currentRow)%2 === 0 ? r.GOLD : r.RED;
 }
 
 function drawCells(gridProperties) {
