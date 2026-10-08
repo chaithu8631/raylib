@@ -5,7 +5,7 @@ function setup() {
         screenWidth: 600,
         screenHeight: 600,
         title: "Pattern",
-        FPS: 60,
+        FPS: 5,
         currentFrame: 0,
     };
     r.InitWindow(world.screenWidth, world.screenHeight, world.title);
