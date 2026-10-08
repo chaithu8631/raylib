@@ -13,13 +13,20 @@ function setup() {
 
     return world;
 }
-function chooseColor(sector,frame) {
-    return (sector+frame)%2?r.RED:r.GOLD;
+function chooseColor(sector) {
+    return sector % 2 ? r.RED : r.GOLD;
 }
-function drawSectors(center, maxSectors,angle,frame) {
+function drawSectors(center, maxSectors, angle) {
     for (let currentSector = 1; currentSector <= maxSectors; currentSector++) {
-        const color = chooseColor(currentSector,frame);
-        r.DrawCircleSector(center, 100, currentSector*angle,currentSector*angle+angle, 1, color);
+        const color = chooseColor(currentSector);
+        r.DrawCircleSector(
+            center,
+            100,
+            currentSector * angle,
+            currentSector * angle + angle,
+            1,
+            color,
+        );
     }
 }
 
@@ -27,10 +34,10 @@ function draw(world) {
     r.BeginDrawing();
     r.ClearBackground(r.WHITE);
 
-    const center = {x:300,y:300};
+    const center = { x: 300, y: 300 };
     const spinnerOptions = 12;
-    const angle = 360/spinnerOptions;
-    drawSectors(center,spinnerOptions,angle,world.currentFrame);
+    const angle = 360 / spinnerOptions;
+    drawSectors(center, spinnerOptions, angle + world.currentFrame);
 
     r.EndDrawing();
 }
