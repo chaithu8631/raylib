@@ -6,7 +6,7 @@ const du = require("./draw_update");
 
 function setup(global) {
 
-    global.window = {
+    global.window = {   
               screenWidth: 600,
               screenHeight: 400,
               title: "particles detector",

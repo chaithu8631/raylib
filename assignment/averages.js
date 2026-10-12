@@ -24,7 +24,7 @@ function setup() {
 
 function sum(data) {
     let sum = 0;
-    for (value of data) {
+    for (const value of data) {
         sum += value;
     }
     return sum;
@@ -32,7 +32,7 @@ function sum(data) {
 
 function findLargest(data) {
     let largest = 0;
-    for (value of data) {
+    for (const value of data) {
         if (largest < value) largest = value;
     }
     return largest;
