@@ -7,7 +7,7 @@ function setup() {
     const FPS = 60;
 
     const data = [12, 45, 78, 23, 91, 56, 34, 67, 89, 40];
-    const gap = 30;
+    const width = 30;
     const radius = 5;
 
     r.SetTraceLogLevel(r.LOG_NONE);
@@ -18,11 +18,18 @@ function setup() {
         screenWidth,
         screenHeight,
         data,
-        gap,
+        width,
         radius,
     };
 }
-
+function scaleHeight(height, factor) {
+    return factor * (height / 100);
+}
+function isPeak(data, current) {
+    return (
+        data[current] > data[current - 1] && data[current] > data[current + 1]
+    );
+}
 function findLargest(data) {
     let largest = 0;
     for (const value of data) {
@@ -30,43 +37,29 @@ function findLargest(data) {
     }
     return largest;
 }
-
-function drawLines(world, unitValue) {
-
-    for (let i = 1; i < world.data.length; i++) {
-        const previousPoint = createPoint(world, i-1, unitValue);
-        const currentPoint = createPoint(world, i, unitValue);
-        r.DrawLineV(previousPoint, currentPoint, r.DARKBLUE);
-    }
-}
-
 function createPoint(world, currentPoint, unitValue) {
-    const x = currentPoint * world.gap;
+    const x = currentPoint * world.width;
     const y = world.screenHeight - world.data[currentPoint] * unitValue;
 
     return { x, y };
 }
-
+function drawLines(world, unitValue) {
+    for (let i = 1; i < world.data.length; i++) {
+        const previousPoint = createPoint(world, i - 1, unitValue);
+        const currentPoint = createPoint(world, i, unitValue);
+        r.DrawLineV(previousPoint, currentPoint, r.DARKBLUE);
+    }
+}
 function drawPeaks(world, unitValue) {
-
-    for (let i = 0; i < world.data.length - 1; i++) {
-
-        if (isPeak(world, i, unitValue)) {
+    for (let i = 1; i < world.data.length - 1; i++) {
+        if (isPeak(world.data, i)) {
             const currentPoint = createPoint(world, i, unitValue);
             r.DrawCircleV(currentPoint, world.radius, r.RED);
         }
     }
 }
-
-function isPeak(world, i, unitValue) {
-    const previousPoint = createPoint(world, i-1, unitValue);
-    const currentPoint = createPoint(world, i, unitValue);
-    const nextPoint = createPoint(world, i + 1, unitValue);
-    return currentPoint.y < previousPoint.y && currentPoint.y < nextPoint.y;
-}
-
 function draw(world) {
-    const maxHeight = 90 * (world.screenHeight / 100);
+    const maxHeight = scaleHeight(world.screenHeight, 90);
     const unitValue = maxHeight / findLargest(world.data);
 
     r.BeginDrawing();
@@ -77,17 +70,14 @@ function draw(world) {
 
     r.EndDrawing();
 }
-
 function loop(world) {
     while (!r.WindowShouldClose()) {
         draw(world);
         // no update!
     }
 }
-
 function main() {
     const world = setup();
     loop(world);
 }
-
 main();
