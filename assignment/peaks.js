@@ -10,6 +10,8 @@ function setup() {
     const width = 30;
     const radius = 5;
 
+    const peakPoints = getPeakPoints(data);
+
     r.SetTraceLogLevel(r.LOG_NONE);
     r.InitWindow(screenWidth, screenHeight, title);
     r.SetTargetFPS(FPS);
@@ -20,15 +22,26 @@ function setup() {
         data,
         width,
         radius,
+        peakPoints,
     };
 }
 function scaleHeight(height, factor) {
     return factor * (height / 100);
 }
+
 function isPeak(data, current) {
     return (
         data[current] > data[current - 1] && data[current] > data[current + 1]
     );
+}
+function getPeakPoints(data) {
+    const peakArray = [];
+    for(let i = 1; i<data.length;i++) {
+        if (isPeak(data, i)) {
+            peakArray.push(i);
+        }
+    }
+    return peakArray;
 }
 function findLargest(data) {
     let largest = 0;
@@ -37,12 +50,14 @@ function findLargest(data) {
     }
     return largest;
 }
+
 function createPoint(world, currentPoint, unitValue) {
     const x = currentPoint * world.width;
     const y = world.screenHeight - world.data[currentPoint] * unitValue;
 
     return { x, y };
 }
+
 function drawLines(world, unitValue) {
     for (let i = 1; i < world.data.length; i++) {
         const previousPoint = createPoint(world, i - 1, unitValue);
@@ -50,14 +65,14 @@ function drawLines(world, unitValue) {
         r.DrawLineV(previousPoint, currentPoint, r.DARKBLUE);
     }
 }
+
 function drawPeaks(world, unitValue) {
-    for (let i = 1; i < world.data.length - 1; i++) {
-        if (isPeak(world.data, i)) {
-            const currentPoint = createPoint(world, i, unitValue);
-            r.DrawCircleV(currentPoint, world.radius, r.RED);
-        }
+    for (let i = 0; i < world.peakPoints.length; i++) {
+        const currentPoint = createPoint(world, world.peakPoints[i], unitValue);
+        r.DrawCircleV(currentPoint, world.radius, r.RED);
     }
 }
+
 function draw(world) {
     const maxHeight = scaleHeight(world.screenHeight, 90);
     const unitValue = maxHeight / findLargest(world.data);
@@ -70,6 +85,7 @@ function draw(world) {
 
     r.EndDrawing();
 }
+
 function loop(world) {
     while (!r.WindowShouldClose()) {
         draw(world);
