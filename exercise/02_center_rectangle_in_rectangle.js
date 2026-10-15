@@ -1,47 +1,63 @@
 const r = require("raylib");
-
-const windowWidth = 1000;
-const windowHeight = 400;
-
-
-const outerRectangleX = 500;
-const outerRectangleY = 100;
-
-const outerRectangleWidth = 300;
-const outerRectangleHeight = 150;
-
-const innerRectangleWidth = 50;
-const innerRectangleHeight = 25;
+const g = require("./geometry");
 
 function setUp() {
-    r.InitWindow(windowWidth, windowHeight, "Rectangle inside rectangle");
+    const window = {
+        width: 800,
+        height: 400,
+    };
+    const outerRectangle = {
+        x: 200,
+        y: 100,
+        width: 400,
+        height: 200,
+    };
+    const innerRectangle = {
+        width: 100,
+        height: 50,
+    };
+
+    r.InitWindow(window.width, window.height, "Rectangle inside rectangle");
     r.SetTargetFPS(60);
+
+    
+    innerRectangle.x = g.computeCoOrdinate(
+        outerRectangle.x,
+        outerRectangle.width,
+        innerRectangle.width,
+    );
+    innerRectangle.y = g.computeCoOrdinate(
+        outerRectangle.y,
+        outerRectangle.height,
+        innerRectangle.height,
+    );
+    return {
+        window,
+        outerRectangle,
+        innerRectangle,
+    };
 }
 
-function computeCoOrdinate(coOrdinateOfouterRectangle, outerRectangleSize, innerRectangleSize) {
-    return coOrdinateOfouterRectangle+(outerRectangleSize-innerRectangleSize)/2;
-}
-function draw() {
-
+function draw(world) {
     r.BeginDrawing();
     r.ClearBackground(r.BLUE);
 
-    r.DrawRectangle(outerRectangleX, outerRectangleY, outerRectangleWidth, outerRectangleHeight, r.WHITE);
-    r.DrawRectangle(computeCoOrdinate(outerRectangleX, outerRectangleWidth, innerRectangleWidth),computeCoOrdinate(outerRectangleY, outerRectangleHeight, innerRectangleHeight), innerRectangleWidth, innerRectangleHeight, r.BLACK);
+    r.DrawRectangleRec(world.outerRectangle, r.WHITE);
+    r.DrawRectangleRec(world.innerRectangle, r.BLUE);
 
     r.EndDrawing();
 }
 
-function loop() {
-    while(!r.WindowShouldClose()) {
-        draw();
+function loop(world) {
+    while (!r.WindowShouldClose()) {
+        draw(world);
         //update();
     }
 }
 
 function main() {
-    setUp();
-    loop();
+    const world = setUp();
+    loop(world);
     r.CloseWindow();
 }
 

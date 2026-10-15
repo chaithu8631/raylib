@@ -1,67 +1,75 @@
 const r = require("raylib");
-
-
-const sourceX = 100;
-const sourceY = 400;
-
-const radius = 50;
-
-const targetCircleOneX = 400;
-const targetCircleOneY = 200;
-
-const targetCircleTwoX = 400;
-const targetCircleTwoY = 600;
-
+const g = require("./geometry");
 
 function setUp() {
-
-    const windowWidth = 1000;
-    const windowHeight = 1000;
-
-    r.InitWindow(windowWidth, windowHeight, "Closer target");
+    const window = {
+        width: 1000,
+        height: 1000,
+    };
+    const source = {
+        x: 100,
+        y: 400,
+        radius: 50,
+    };
+    const circleOne = {
+        x: 400,
+        y: 200,
+        radius: 50,
+    };
+    const circleTwo = {
+        x: 400,
+        y: 600,
+        radius: 50,
+    };
+    const distance1 = g.distanceCalculate(source, circleOne);
+    const distance2 = g.distanceCalculate(source, circleTwo);
+    
+    r.InitWindow(window.width, window.height, "Closer target");
     r.SetTargetFPS(60);
+
+    return {
+        window,
+        source,
+        circleOne,
+        circleTwo,
+        distance1,
+        distance2,
+    };
 }
 
-function loop(){
-    while(!r.WindowShouldClose()) {
+function loop(world) {
+    while (!r.WindowShouldClose()) {
         //update();
-        draw();
+        draw(world);
     }
 }
 
 function main() {
-    setUp();
-    loop();
+    const world = setUp();
+    loop(world);
     r.CloseWindow();
 }
 
-function distanceCalculate(X1,Y1,X2,Y2) {
-    return (( ( X2 - X1 ) ** 2 ) + ( (Y2 - Y1) ** 2 ) ) ** 0.5;
-}
+function draw(world) {
+    r.BeginDrawing();
+    r.ClearBackground(r.BLACK);
 
-const targetCircleOneDistance = distanceCalculate(sourceX, sourceY, targetCircleOneX,targetCircleOneY);
-const targetCircleTwoDistance = distanceCalculate(sourceX, sourceY, targetCircleTwoX,targetCircleTwoY);
+    r.DrawCircleV(world.source, world.source.radius, r.BLUE);
+    r.DrawCircleV(world.circleOne, world.circleOne.radius, r.GREEN);
+    r.DrawCircleV(world.circleTwo, world.circleTwo.radius, r.RED);
 
+    if (world.distance1 === world.distance2) {
+        r.DrawLineV(world.source, world.circleOne, r.YELLOW);
+        r.DrawLineV(world.source, world.circleTwo, r.YELLOW);
+    } else {
+        const target =
+            world.distance1 < world.distance2
+                ? world.circleOne
+                : world.circleTwo;
+        r.DrawLineV(world.source, target, r.ORANGE);
+    }
 
-function decideTargetCircle(targetCircleOneDistance, targetCircleTwoDistance, targetCircleOneCoOrdinate, targetCircleTwoCoOrdinate ) {
-    return targetCircleOneDistance < targetCircleTwoDistance ? targetCircleOneCoOrdinate : targetCircleTwoCoOrdinate ;
-}
-
-function draw() {
-        r.BeginDrawing();
-        r.ClearBackground(r.BLACK);
-
-        r.DrawCircle(sourceX, sourceY, radius, r.BLUE);
-
-        r.DrawCircle(targetCircleOneX, targetCircleOneY, radius, r.GREEN);
-        r.DrawCircle(targetCircleTwoX, targetCircleTwoY, radius, r.RED);
-
-        r.DrawLine(sourceX, sourceY, decideTargetCircle(targetCircleOneDistance, targetCircleTwoDistance, targetCircleOneX, targetCircleTwoX), decideTargetCircle(targetCircleOneDistance, targetCircleTwoDistance, targetCircleOneY, targetCircleTwoY), r.YELLOW);
-        if (targetCircleOneDistance === targetCircleTwoDistance)
-            r.DrawLine(sourceX, sourceY, decideTargetCircle(targetCircleOneDistance, targetCircleTwoDistance, targetCircleTwoX, targetCircleOneX), decideTargetCircle(targetCircleOneDistance, targetCircleTwoDistance, targetCircleTwoY, targetCircleOneY), r.YELLOW);
-
-        r.EndDrawing();
-
+    r.EndDrawing();
 }
 
 main();

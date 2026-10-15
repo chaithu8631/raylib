@@ -1,52 +1,61 @@
 const r = require("raylib");
-
-const windowWidth = 1600;
-const windowHeight = 1200;
-
-const outRectangleX = 150;
-const outRectangleY = 50;
-
-const outRectangleWidth = 1000;
-const outRectangleHeight = 500;
-
-const widthRatio = 0.9;
-const heightRatio = 0.9;
-
+const g = require("./geometry");
 
 function setUp() {
-    r.InitWindow(windowWidth, windowHeight, "scale and center");
+    const window = {
+        width: 1600,
+        height: 1200,
+    };
+    const outerRectangle = {
+        x: 150,
+        y: 50,
+        width: 1000,
+        height: 500,
+    };
+    const ratio = {
+        width: 0.5,
+        height: 0.5,
+    };
+    const innerRectangle={};
+    innerRectangle.x = g.computeCoOrdinateR(outerRectangle.x, outerRectangle.width, ratio.width);
+    innerRectangle.y = g.computeCoOrdinateR(outerRectangle.y, outerRectangle.height, ratio.height);
+    innerRectangle.width = g.computeSize(outerRectangle.width, ratio.width);
+    innerRectangle.height = g.computeSize(outerRectangle.height, ratio.height);
+
+    r.InitWindow(window.width, window.height, "scale and center");
     r.SetTargetFPS(60);
+    return {
+        window,
+        outerRectangle,
+        innerRectangle,
+        ratio,
+    };
 }
 
-function computeCoOrdinate(coOrdinateOfouterRectangle, outerRectangleSize, innerRectangleRatio) {
-    return coOrdinateOfouterRectangle + (outerRectangleSize * (1 - innerRectangleRatio)) / 2;
-}
 
-function computeSize(outerRectangleSize, innerRectangleRatio) {
-    return outerRectangleSize * innerRectangleRatio;
-}
 
-function draw() {
 
+
+function draw(world) {
     r.BeginDrawing();
     r.ClearBackground(r.BLUE);
 
-    r.DrawRectangle(outRectangleX, outRectangleY, outRectangleWidth, outRectangleHeight, r.WHITE);
-    r.DrawRectangle(computeCoOrdinate(outRectangleX, outRectangleWidth, widthRatio), computeCoOrdinate(outRectangleY, outRectangleHeight, heightRatio), computeSize(outRectangleWidth, widthRatio), computeSize(outRectangleHeight, heightRatio), r.RED);
+    r.DrawRectangleRec(world.outerRectangle, r.WHITE);
+    r.DrawRectangleRec(world.innerRectangle, r.RED);
 
     r.EndDrawing();
 }
 
-function loop() {
+function loop(world) {
     while (!r.WindowShouldClose()) {
         //update();
-        draw();
+        draw(world);
     }
 }
 
 function main() {
-    setUp();
-    loop();
+    const world = setUp();
+    loop(world);
     r.CloseWindow();
 }
 

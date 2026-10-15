@@ -1,61 +1,58 @@
 const r = require("raylib");
+const g = require("./geometry");
 
-const windowWidth = 1000;
-const windowHeight = 800;
-const title = "Intertsecting of circles";
+function setUp() {
+    const window = {
+        width: 1000,
+        height: 800,
+    };
 
+    const circleOne = {
+        x: 300,
+        y: 300,
+        radius: 150,
+    };
+    const circleTwo = {
+        x: 600,
+        y: 600,
+        radius: 150,
+    };
+    const distance = g.distanceCalculate(circleOne, circleTwo);
+    const idealDistance = circleOne.radius + circleTwo.radius;
 
-const circle1X = 300;
-const circle1Y = 300;
-const circle1Radius = 150;
+    const color = distance < idealDistance ? r.RED : r.BLACK;
 
-const circle2X = 600;
-const circle2Y = 600;
-const circle2Radius = 300;
+    r.InitWindow(window.width, window.height, "Intertsecting of circles");
+    r.SetTargetFPS(60);
 
-const circleColorUnIntersect = r.BLACK;
-const circleColorIntersect = r.RED;
+    return {
+        window,
+        circleOne,
+        circleTwo,
+        color,
+    };
+}
 
-function draw() {
+function draw(world) {
     r.BeginDrawing();
     r.ClearBackground(r.WHITE);
 
-    r.DrawCircle(circle1X, circle1Y, circle1Radius, circleColorUnIntersect);
-    r.DrawCircle(circle2X, circle2Y, circle2Radius, circleColorUnIntersect);
-    
+    r.DrawCircleV(world.circleOne, world.circleOne.radius, world.color);
+    r.DrawCircleV(world.circleTwo, world.circleTwo.radius, world.color);
+
     r.EndDrawing();
 }
 
-function calcDistance(X1,Y1,X2,Y2) {
-    return (( ( X2 - X1 ) ** 2 ) + ( (Y2 - Y1) ** 2 ) ) ** 0.5;
-}
-
-function setUp() {
-    r.InitWindow(windowWidth, windowHeight, title);
-    r.SetTargetFPS(60);
-}
-
-function loop() {
+function loop(world) {
     while (!r.WindowShouldClose()) {
-        draw();
-        update();
+        //update();
+        draw(world);
     }
 }
 
-function update() {
-    const distance = calcDistance(circle1X, circle1Y, circle2X, circle2Y);
-    const limit = circle1Radius + circle2Radius;
-    r.BeginDrawing();
-
-    if( distance < limit){
-        r.DrawCircle(circle1X, circle1Y, circle1Radius, circleColorIntersect);
-        r.DrawCircle(circle2X, circle2Y, circle2Radius, circleColorIntersect);
-    }
-    r.EndDrawing();
-}
 function main() {
-    setUp();
-    loop();
+    const world = setUp();
+    loop(world);
     r.CloseWindow();
 }
 
