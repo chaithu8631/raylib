@@ -1,0 +1,32 @@
+const r = require("raylib");
+const palette = [
+    r.LIGHTGRAY,
+    r.GRAY,
+    r.DARKGRAY,
+    r.YELLOW,
+    r.GOLD,
+    r.ORANGE,
+    r.PINK,
+    r.RED,
+    r.MAROON,
+    r.GREEN,
+    r.LIME,
+    r.DARKGREEN,
+    r.SKYBLUE,
+    r.BLUE,
+    r.DARKBLUE,
+    r.PURPLE,
+    r.VIOLET,
+    r.DARKPURPLE,
+    r.BEIGE,
+    r.BROWN,
+    r.DARKBROWN,
+    r.WHITE,
+    r.BLACK,
+    r.BLANK,
+    r.MAGENTA,
+    r.RAYWHITE5,
+];
+module.exports = {
+    palette,
+};

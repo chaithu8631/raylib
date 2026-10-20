@@ -4,66 +4,87 @@ function setup() {
     // width: 600
     // height: 400
     // Put the origin of your graph at approximately:
-    const screenWidth = 600;
-    const screenHeight = 400;
+    const screen = {
+        width: 600,
+        height: 400,
+    };
     const title = "Circle Points";
     const FPS = 60;
 
-    // origin: (50, 200)
-    // radius: 150
-    // number of sides: 7
-
     const origin = { x: 50, y: 200 };
-    const radius = 150;
-    
-    r.InitWindow(screenWidth, screenHeight, title);
+    const radius = 5;
+
+    r.InitWindow(screen.width, screen.height, title);
     r.SetTargetFPS(FPS);
 
     return {
-        screenWidth,
-        screenHeight,
-        center,
+        screen,
+        origin,
         radius,
-        numberOfSides,
     };
 }
 
-function drawVertex(world) {
-    const angularSpace = (2 * Math.PI) / world.numberOfSides;
+function getScreenPos(world, angle, value) {
+    const X_SCALE = (world.screen.width - world.origin.x - 200) / (2 * Math.PI); // Scale 2π to fit the window width
+    const Y_SCALE = 150; // Visibility scaling for amplitude
+    return {
+        x: world.origin.x + angle * X_SCALE,
+        y: world.origin.y - value * Y_SCALE, // Invert Y for screen space
+    };
+}
+function drawSine(world, smoothness, maxAngle) {
+    let prevPoint = getScreenPos(world, 0, Math.sin(0));
 
-    for (let i = 0; i < world.numberOfSides; i++) {
-        const previousAngle = angularSpace * (i - 1);
-        const currentAngle = angularSpace * i;
-
-        const currentStart = createCoOrdinates(
-            previousAngle,
-            world.center,
-            world.radius,
+    for (let i = 0; i < smoothness; i++) {
+        let angle = (i / smoothness) * maxAngle;
+        let value = Math.sin(angle);
+        let currentPoint = getScreenPos(world, angle, value);
+        r.DrawLineEx(
+            { x: prevPoint.x, y: prevPoint.y },
+            { x: currentPoint.x, y: currentPoint.y },
+            3.0,
+            r.BLUE,
         );
 
-        const currentEnd = createCoOrdinates(
-            currentAngle,
-            world.center,
-            world.radius,
-        );
-
-        r.DrawLineV(currentStart, currentEnd, r.BLACK);
+        prevPoint = currentPoint;
     }
 }
-function createCoOrdinates(angle, center, radius) {
-    const xCos = Math.cos(angle);
-    const ySin = Math.sin(angle);
+function drawCosine(world, smoothness, maxAngle) {
+    let prevPoint = getScreenPos(world, 0, Math.sin(0));
 
-    const x = center.x + radius * xCos;
-    const y = center.y + radius * ySin;
-    return { x, y };
+    for (let i = 0; i < smoothness; i++) {
+        let angle = (i / smoothness) * maxAngle;
+        let value = Math.cos(angle);
+        let currentPoint = getScreenPos(world, angle, value);
+        r.DrawLineEx(
+            { x: prevPoint.x, y: prevPoint.y },
+            { x: currentPoint.x, y: currentPoint.y },
+            3.0,
+            r.BLUE,
+        );
+
+        prevPoint = currentPoint;
+    }
+}
+function drawWaves(world) {
+    const smoothness = 360;
+    const maxAngle = 2 * Math.PI;
+
+    drawSine(world, smoothness, maxAngle);
+    drawCosine(world, smoothness, maxAngle);
 }
 
+function drawAxis(origin, screen) {
+    r.DrawLine(origin.x, 0, origin.x, screen.height, r.YELLOW);
+    r.DrawLine(0, origin.y, screen.width, origin.y, r.YELLOW);
+}
 function draw(world) {
     r.BeginDrawing();
-    r.ClearBackground(r.WHITE);
+    r.ClearBackground(r.BLACK);
 
-    drawVertex(world);
+    drawAxis(world.origin, world.screen);
+
+    drawWaves(world);
 
     r.EndDrawing();
 }
