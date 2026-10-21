@@ -1,9 +1,5 @@
 const r = require("raylib");
 
-function running() {
-    return !r.WindowShouldClose();
-}
-
 function setup() {
     const width = 500;
     const height = 500;
@@ -24,7 +20,7 @@ function setup() {
         color
     };
 }
-function update(world) {}
+// function update(world) {}
 
 function draw(world) {
     r.BeginDrawing();
@@ -35,14 +31,19 @@ function draw(world) {
     r.EndDrawing();
 }
 
+function loop(world) {
+    while (!r.WindowShouldClose()) {
+        draw(world);
+        // update(world);
+    }
+}
 function teardown() {
     r.CloseWindow();
 }
+function main() {
+    const world = setup();
+    loop(world);
+    teardown();
+}
 
-module.exports = {
-    running,
-    setup,
-    update,
-    draw,
-    teardown,
-};
+main();
