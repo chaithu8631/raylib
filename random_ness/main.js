@@ -1,4 +1,4 @@
-const sketch = require("./random_rectangles");
+const sketch = require("./random_points_in_window");
 
 function loop(world) {
   while (sketch.running()) {
