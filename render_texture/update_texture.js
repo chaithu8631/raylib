@@ -8,6 +8,7 @@ function setUp() {
     r.InitWindow(window.width, window.height, "texture reuse");
     r.SetTargetFPS(60);
     const target = r.LoadRenderTexture(800, 200);
+    
     const circle = { x: 10, y: 100, radius: 5, angle: 0 };
     return {
         window,
@@ -19,7 +20,7 @@ function setUp() {
 function designTexture(target, circle) {
     r.BeginTextureMode(target);
 
-    r.DrawCircleV(circle, circle.radius, r.BLUE);
+    r.DrawCircleV(circle, circle.radius, r.WHITE);
 
     r.EndTextureMode();
 }
@@ -28,14 +29,13 @@ function draw(world) {
     r.BeginDrawing();
     r.ClearBackground(r.RED);
 
-    r.DrawTexture(world.target.texture, 50, 100, r.YELLOW);
+    r.DrawTexture(world.target.texture, 0, 100, r.YELLOW);
 
     r.EndDrawing();
 }
 
 function update(world) {
-    console.log(world.target.width);
-
+    if(world.circle.x<800)
     designTexture(world.target, world.circle);
     world.circle.angle += 10;
     world.circle.x += 10;
