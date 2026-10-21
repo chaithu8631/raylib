@@ -1,4 +1,4 @@
-const sketch = require("./random_lines");
+const sketch = require("./random_rectangles");
 
 function loop(world) {
   while (sketch.running()) {
