@@ -11,30 +11,26 @@ function setup() {
     r.InitWindow(width, height, "Random rectangles");
     r.SetTargetFPS(60);
 
-    const lines = [];
-    for(let i=0;i<100;i++){
-    // if (lines.length < 800) 
-    const red = Math.random() * 255;
-    const green = Math.random() * 255;
-    const blue = Math.random() * 255;
-    const alpha = Math.random() * 255;
-    const color = { r: red, g: green, b: blue, a: alpha };
-
-    lines.push([Math.random() * 500,color]);
+    const color = {r:245,g:245,b:245,a:100};
+    const points = [];
+    for (let i = 0; i < 100; i++) {
+        const x = Math.random() * 500;
+        const y = Math.random() * 500;
+        points.push({x,y});
     }
 
     return {
-        lines,
+        points,
+        color
     };
 }
-function update(world) {
-}
+function update(world) {}
 
 function draw(world) {
     r.BeginDrawing();
     r.ClearBackground(r.BLUE);
-    for (const [line,color] of world.lines) {
-        r.DrawLine(line, 0, line, 500, color);
+    for (const point of world.points) {
+        r.DrawCircleV(point,10,world.color);
     }
     r.EndDrawing();
 }
