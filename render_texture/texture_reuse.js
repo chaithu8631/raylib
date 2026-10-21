@@ -18,7 +18,6 @@ function setUp() {
 
 function designTexture(target) {
     r.BeginTextureMode(target);
-
     r.ClearBackground(r.BLACK);
     r.DrawCircle(100, 100, 60, r.RED);
     r.DrawCircle(80, 80, 15, r.WHITE);
