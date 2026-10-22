@@ -8,11 +8,10 @@ function setup() {
         width: 600,
         height: 400,
     };
-    const title = "Circle Points";
+    const title = "Sin & Cos Waves";
     const FPS = 60;
 
     const origin = { x: 50, y: 200 };
-    const radius = 5;
 
     r.InitWindow(screen.width, screen.height, title);
     r.SetTargetFPS(FPS);
@@ -20,25 +19,24 @@ function setup() {
     return {
         screen,
         origin,
-        radius,
     };
 }
 
-function getScreenPos(world, angle, value) {
-    const X_SCALE = (world.screen.width - world.origin.x - 200) / (2 * Math.PI); // Scale 2π to fit the window width
-    const Y_SCALE = 150; // Visibility scaling for amplitude
+function getCoOrdinate(world, angle, value) {
+    const xScale = (world.screen.width - world.origin.x - 200) / (2 * Math.PI);
+    const yScale = 150;
     return {
-        x: world.origin.x + angle * X_SCALE,
-        y: world.origin.y - value * Y_SCALE, // Invert Y for screen space
+        x: world.origin.x + angle * xScale,
+        y: world.origin.y - value * yScale,
     };
 }
 function drawSine(world, smoothness, maxAngle) {
-    let prevPoint = getScreenPos(world, 0, Math.sin(0));
+    let prevPoint = getCoOrdinate(world, 0, Math.sin(0));
 
     for (let i = 0; i < smoothness; i++) {
         let angle = (i / smoothness) * maxAngle;
         let value = Math.sin(angle);
-        let currentPoint = getScreenPos(world, angle, value);
+        let currentPoint = getCoOrdinate(world, angle, value);
         r.DrawLineEx(
             { x: prevPoint.x, y: prevPoint.y },
             { x: currentPoint.x, y: currentPoint.y },
@@ -50,12 +48,12 @@ function drawSine(world, smoothness, maxAngle) {
     }
 }
 function drawCosine(world, smoothness, maxAngle) {
-    let prevPoint = getScreenPos(world, 0, Math.sin(0));
+    let prevPoint = getCoOrdinate(world, 0, Math.sin(0));
 
     for (let i = 0; i < smoothness; i++) {
         let angle = (i / smoothness) * maxAngle;
         let value = Math.cos(angle);
-        let currentPoint = getScreenPos(world, angle, value);
+        let currentPoint = getCoOrdinate(world, angle, value);
         r.DrawLineEx(
             { x: prevPoint.x, y: prevPoint.y },
             { x: currentPoint.x, y: currentPoint.y },
