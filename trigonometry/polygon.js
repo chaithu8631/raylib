@@ -1,111 +1,78 @@
 const r = require("raylib");
 
-function setup() {
-    const screenWidth = 400;
-    const screenHeight = 400;
-    const title = "Circle Points";
-    const FPS = 60;
-
-    // center: (200, 200)
-    // radius: 150
-    // number of sides: 7
-    const center = { x: 200, y: 200 };
-    const radius = 150;
-    const numberOfSides = 7;
-
-    r.InitWindow(screenWidth, screenHeight, title);
-    r.SetTargetFPS(FPS);
-
-    return {
-        screenWidth,
-        screenHeight,
-        center,
-        radius,
-        numberOfSides,
-    };
-}
-
-function drawVertex(world) {
-    const angularSpace = (2 * Math.PI) / world.numberOfSides;
-
-    for (let i = 0; i < world.numberOfSides; i++) {
-        const previousAngle = angularSpace * (i - 1);
-        const currentAngle = angularSpace * i;
-
-        const currentStart = createCoOrdinates(
-            previousAngle,
-            world.center,
-            world.radius,
-        );
-        
-        const currentEnd = createCoOrdinates(
-            currentAngle,
-            world.center,
-            world.radius,
-        );
-
-        r.DrawLineV(currentStart,currentEnd,r.BLACK);
-    }
-}
 function createCoOrdinates(angle, center, radius) {
-    const xCos = Math.cos(angle);
-    const ySin = Math.sin(angle);
+  const xCos = Math.cos(angle);
+  const ySin = Math.sin(angle);
 
-    const x = center.x + radius * xCos;
-    const y = center.y + radius * ySin;
-    return { x, y };
+  const x = center.x + radius * xCos;
+  const y = center.y + radius * ySin;
+  return { x, y };
+}
+
+function getVertices(center, radius, numberOfSides) {
+  const points = [];
+  const angularSpace = (2 * Math.PI) / numberOfSides;
+
+  for (let i = 0; i < numberOfSides; i++) {
+    const angle = angularSpace * i;
+    const point = createCoOrdinates(angle, center, radius);
+    points.push(point);
+  }
+  return points;
+}
+
+function setup() {
+  const screenWidth = 400;
+  const screenHeight = 400;
+  const title = "Polygon";
+  const FPS = 60;
+
+  const center = { x: 200, y: 200 };
+  const radius = 150;
+  const numberOfSides = 7;
+  const points = getVertices(center, radius, numberOfSides);
+
+  r.InitWindow(screenWidth, screenHeight, title);
+  r.SetTargetFPS(FPS);
+
+  return {
+    center,
+    radius,
+    numberOfSides,
+    points,
+  };
+}
+
+function drawVertex(points) {
+  for (let i = 0; i < points.length - 1; i++) {
+    r.DrawLineEx(points[i], points[i + 1], 3, r.LIME);
+  }
+  r.DrawLineEx(points[points.length - 1], points[0], 3, r.LIME);
 }
 
 function draw(world) {
-    r.BeginDrawing();
-    r.ClearBackground(r.WHITE);
+  r.BeginDrawing();
+  r.ClearBackground(r.BLACK);
 
-    drawVertex(world);
+  drawVertex(world.points);
 
-    r.EndDrawing();
+  r.EndDrawing();
 }
 
 function loop(world) {
-    while (!r.WindowShouldClose()) {
-        // no update!
-        draw(world);
-    }
+  while (!r.WindowShouldClose()) {
+    // no update!
+    draw(world);
+  }
 }
 
+function teardown() {
+  r.CloseWindow();
+}
 function main() {
-    const world = setup();
-    loop(world);
+  const world = setup();
+  loop(world);
+  teardown();
 }
 
 main();
-
-// Draw a regular polygon with:
-
-// center: (200, 200)
-// radius: 150
-// number of sides: 7
-// In other words, draw a regular heptagon.
-
-// The polygon should be drawn by calculating the positions of its vertices and then drawing lines between consecutive vertices.
-
-// Requirements#
-// Store the number of sides in a constant.
-// Store the center and radius in constants.
-// Calculate all seven vertices.
-// Do not hard-code any vertex coordinates.
-// Use a loop.
-// Every vertex must lie on the same circle.
-// The vertices must be equally spaced around the circle.
-// Connect the last vertex back to the first vertex.
-// You are not being asked to use a polygon-drawing function.
-
-// Instead, think back to the previous challenge.
-
-// You already know how to find points at equally spaced angles around a circle.
-
-// What changes when there are seven points instead of twelve?
-
-// One detail#
-// The polygon does not have to have one particular orientation. It is perfectly fine if one vertex is at the top, or if one of the edges is horizontal.
-
-// What matters is that it is actually a regular polygon.
