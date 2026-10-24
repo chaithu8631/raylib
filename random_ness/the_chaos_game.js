@@ -27,7 +27,7 @@ function setup() {
 }
 function getRandomPoints(currentPoint,vertices) {
 const points = [];
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 2000; i++) {
     const targetCorner = vertices[Math.floor(Math.random() * 3)];
 
     currentPoint.x = (currentPoint.x + targetCorner.x) / 2;
