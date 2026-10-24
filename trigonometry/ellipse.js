@@ -23,8 +23,6 @@ function getEllipsePoints(center, radius, steps) {
 }
 
 function setup() {
-  // width: 800
-  // height: 600
   const screenWidth = 800;
   const screenHeight = 600;
   const title = "Ellipse without ellipse function";
@@ -32,7 +30,6 @@ function setup() {
 
   const center = { x: 300, y: 200 };
   const radius = { x: 200, y: 100 };
-
   const steps = 360;
   const points = getEllipsePoints(center, radius, steps);
 
@@ -58,20 +55,19 @@ function draw(world) {
   r.ClearBackground(r.BLACK);
 
   r.DrawLine(
-    world.center.x - world.radius.x,
+    world.center.x - world.radius.x-20,
     world.center.y,
-    world.center.x + world.radius.x,
+    world.center.x + world.radius.x+20,
     world.center.y,
     r.LIGHTGRAY,
   );
   r.DrawLine(
     world.center.x,
-    world.center.y - world.radius.y,
+    world.center.y - world.radius.y-20,
     world.center.x,
-    world.center.y + world.radius.y,
+    world.center.y + world.radius.y+20,
     r.LIGHTGRAY,
   );
-
   drawEllipse(world.points);
 
   r.EndDrawing();
@@ -84,9 +80,14 @@ function loop(world) {
   }
 }
 
+function teardown() {
+  r.CloseWindow();
+}
+
 function main() {
   const world = setup();
   loop(world);
+  teardown();
 }
 
 main();
