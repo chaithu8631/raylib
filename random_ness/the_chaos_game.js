@@ -15,14 +15,13 @@ function getRandomPoints(vertices, numberOfPoints) {
     point = getmiddlePoint(point, targetCorner);
     points.push(point);
   }
-  console.log(points);
-
   return points;
 }
 
 function setup() {
   const screenWidth = 800;
   const screenHeight = 800;
+  r.SetTraceLogLevel(r.LOG_NONE);
   r.InitWindow(screenWidth, screenHeight, "The Chaos Game");
   r.SetTargetFPS(100);
 
